@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>.b8 Syndromes</title>
+<style>
+  :root{
+    --stone-950:#15181b;
+    --stone-800:#2b3136;
+    --stone-700:#454c53;
+    --stone-500:#7c8590;
+    --stone-300:#c3c9ce;
+    --stone-200:#dde1e4;
+    --stone-100:#eceef0;
+    --paper:#f3f4f5;
+    --card:#fbfbfc;
+    --hole:#b23324;
+    --hole-bg:#fbeae7;
+    --bet:#a5710c;
+    --bet-bg:#faf1de;
+    --trace:var(--stone-800);
+    --rule:var(--stone-200);
+    --shadow:0 1px 2px rgba(21,24,27,.04), 0 8px 24px -12px rgba(21,24,27,.18);
+    --font-sans:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+    --font-mono:'IBM Plex Mono','SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --stone-950:#eef0f1;
+      --stone-800:#d7dade;
+      --stone-700:#aeb4ba;
+      --stone-500:#88909a;
+      --stone-300:#495056;
+      --stone-200:#31373c;
+      --stone-100:#22262a;
+      --paper:#181b1e;
+      --card:#1e2124;
+      --hole:#e2685a;
+      --hole-bg:#3a2220;
+      --bet:#d4a341;
+      --bet-bg:#3a3120;
+      --trace:var(--stone-800);
+      --rule:var(--stone-200);
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 28px -12px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"]{
+    --stone-950:#eef0f1;
+    --stone-800:#d7dade;
+    --stone-700:#aeb4ba;
+    --stone-500:#88909a;
+    --stone-300:#495056;
+    --stone-200:#31373c;
+    --stone-100:#22262a;
+    --paper:#181b1e;
+    --card:#1e2124;
+    --hole:#e2685a;
+    --hole-bg:#3a2220;
+    --bet:#d4a341;
+    --bet-bg:#3a3120;
+    --trace:var(--stone-800);
+    --rule:var(--stone-200);
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 28px -12px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    background:var(--paper);
+    color:var(--stone-800);
+    font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(20px,4vw,48px) 16px 40px;
+  }
+  .page{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .masthead{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--stone-500);
+  }
+  .closed-state{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--trace);
+    background:var(--stone-100);
+    border:1px solid var(--rule);
+    border-radius:999px;
+    padding:3px 10px;
+    white-space:nowrap;
+  }
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:14px;
+    box-shadow:var(--shadow);
+    padding:clamp(20px,3.4vw,32px);
+  }
+
+  h1{
+    font-family:var(--font-sans);
+    font-weight:600;
+    font-size:clamp(20px,3vw,25px);
+    line-height:1.32;
+    letter-spacing:-.005em;
+    text-wrap:balance;
+    margin:0 0 4px;
+    color:var(--stone-950);
+  }
+  .subtext{
+    font-size:14px;
+    color:var(--stone-700);
+    line-height:1.55;
+    max-width:60ch;
+    margin:0;
+  }
+
+  .tag-row{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .chip{
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.03em;
+    padding:4px 9px;
+    border-radius:6px;
+    border:1px solid transparent;
+  }
+  .chip.trace{ color:var(--trace); background:var(--stone-100); border-color:var(--rule); }
+  .chip.bet{ color:var(--bet); background:var(--bet-bg); }
+  .chip.core{ color:var(--trace); background:var(--stone-100); border-color:var(--rule); font-weight:600; }
+
+  .fields{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px 24px;
+  }
+  .field{ min-width:0; }
+  .field dt{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--stone-500);
+    margin-bottom:3px;
+  }
+  .field dd{
+    margin:0;
+    font-family:var(--font-mono);
+    font-size:13.5px;
+    color:var(--stone-950);
+    line-height:1.5;
+    font-variant-numeric:tabular-nums;
+    overflow-wrap:anywhere;
+  }
+  .field.full{ grid-column:1 / -1; }
+
+  .surface-block{
+    margin-top:22px;
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:16px 18px;
+    background:var(--stone-100);
+  }
+  .surface-block-title{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--stone-500);
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .surface-block-title::after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:var(--rule);
+  }
+  .surface-grid{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px 18px;
+  }
+  .surface-grid .field dd{ font-size:13px; }
+
+  .p-l-highlight{
+    grid-column:span 2;
+    background:var(--card);
+    border:1px solid var(--rule);
+    border-radius:8px;
+    padding:10px 14px;
+  }
+  .p-l-highlight dt{ margin-bottom:2px; }
+  .p-l-highlight dd{
+    font-size:22px;
+    font-weight:600;
+    color:var(--bet);
+    letter-spacing:-.01em;
+  }
+  .p-l-highlight .sub{
+    display:block;
+    font-family:var(--font-sans);
+    font-size:11.5px;
+    color:var(--stone-500);
+    font-weight:400;
+    letter-spacing:0;
+    margin-top:4px;
+  }
+
+  .gaps{
+    margin-top:22px;
+  }
+  .section-title{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--hole);
+    margin-bottom:10px;
+  }
+  .gaps-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+  }
+  .gaps-list li{
+    font-size:13.5px;
+    line-height:1.5;
+    color:var(--stone-800);
+    padding-left:13px;
+    border-left:2.5px solid var(--hole);
+  }
+  .gaps-list b{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--hole);
+    font-weight:600;
+  }
+
+  .formal-footer{
+    margin-top:22px;
+    padding-top:16px;
+    border-top:1px solid var(--rule);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px 24px;
+  }
+  .formal-footer .field dd{ font-size:12.5px; color:var(--stone-700); }
+
+  .mwi{
+    margin-top:16px;
+    font-size:12px;
+    color:var(--stone-500);
+    font-style:italic;
+    font-family:var(--font-sans);
+  }
+
+  .provenance{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    font-family:var(--font-mono);
+    font-size:11px;
+    color:var(--stone-500);
+    padding:0 4px;
+  }
+  .provenance a{ color:var(--stone-700); }
+  .provenance code{
+    background:var(--stone-100);
+    border:1px solid var(--rule);
+    border-radius:4px;
+    padding:1px 5px;
+  }
+
+  .integrity{
+    border:1px solid var(--rule);
+    border-radius:10px;
+    padding:14px 16px;
+    background:var(--stone-100);
+  }
+  .integrity-title{
+    font-family:var(--font-mono);
+    font-size:10.5px;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--stone-500);
+    margin-bottom:10px;
+  }
+  .integrity-fields{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px 18px;
+  }
+  .integrity-fields dd{
+    font-family:var(--font-mono);
+    font-size:12px;
+    overflow-wrap:anywhere;
+  }
+  .integrity-ok{ color:var(--bet); font-weight:600; }
+
+  @media (max-width:600px){
+    .fields{ grid-template-columns:1fr; }
+    .surface-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .p-l-highlight{ grid-column:1 / -1; }
+    .formal-footer{ grid-template-columns:1fr; }
+    .integrity-fields{ grid-template-columns:1fr; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+
+<div class="page">
+
+  <div class="masthead">
+    <div class="eyebrow">Strip Emitter · protocol v28</div>
+    <div class="closed-state">v28 · R1–R232</div>
+  </div>
+
+  <div class="card">
+    <h1>Real syndromes from a d=3 logical qubit, 105-qubit chip (2024), batch-decoded</h1>
+    <p style="font-family:var(--font-mono);font-size:12px;color:var(--stone-500);margin:0 0 6px;">chip=105 · patch=d3@q4_5 · d=3 — don't confuse chip with distance (R164)</p>
+    <p style="font-size:12px;color:var(--stone-500);font-style:italic;margin:0 0 10px;">Independent analysis, not affiliated with or endorsed by Google Quantum AI. Data: <a href="https://doi.org/10.5281/zenodo.13273331" target="_blank" rel="noopener" style="color:inherit;">10.5281/zenodo.13273331</a>, Google Quantum AI, CC-BY-4.0.</p>
+    <p class="subtext">
+      Y comes from <code style="font-family:var(--font-mono)">detection_events.b8</code> of experiment
+      <code style="font-family:var(--font-mono)">d3_at_q4_5/X/r10</code> — never synthesized.
+      p_L is over the full ensemble, not a single shot. Dataset from the paper
+      <em>"Quantum error correction below the surface code threshold"</em> (2024-08-26).
+    </p>
+
+    <div class="tag-row">
+      <span class="chip core">CORE</span>
+      <span class="chip trace">TRACE</span>
+      <span class="chip bet">ê = BET</span>
+    </div>
+
+    <dl class="fields">
+      <div class="field">
+        <dt>Channel</dt>
+        <dd>Δt = 1 stabilizer cycle · superconducting qubits · η not declared by Google in this file</dd>
+      </div>
+      <div class="field">
+        <dt>Class</dt>
+        <dd>surface code, logical X memory</dd>
+      </div>
+      <div class="field">
+        <dt>Load</dt>
+        <dd>apparatus = Google's processor (dataset), circuit with real gate noise, no declared L→logical map (R124)</dd>
+      </div>
+      <div class="field">
+        <dt>Falsifier</dt>
+        <dd>a different decoder/prior that changes ê on the same Y ⇒ degeneracy of the method, not of the cone (R127/R129)</dd>
+      </div>
+    </dl>
+
+    <div class="surface-block">
+      <div class="surface-block-title">surface block — §6, mandatory</div>
+      <div class="surface-grid">
+        <div class="field"><dt>d</dt><dd>3</dd></div>
+        <div class="field"><dt>cycles</dt><dd>10</dd></div>
+        <div class="field"><dt>geometry</dt><dd>rotated (XZZX)</dd></div>
+        <div class="field"><dt>decoder</dt><dd>correlated matching (hypergraph DEM, BP-approx.), si1000 prior</dd></div>
+        <div class="field"><dt>cone</dt><dd>batch</dd></div>
+        <div class="field"><dt>shots</dt><dd>50,000</dd></div>
+        <div class="field"><dt>Y shape</dt><dd>(50,000, 80)</dd></div>
+        <div class="field"><dt>p, p_th</dt><dd>not measured in this strip</dd></div>
+        <div class="p-l-highlight field">
+          <dt>p_L (ensemble, r=10)</dt>
+          <dd>3471/50000 <span class="sub">= 0.06942 (terminating fraction, not repeating) · correlated_matching(si1000) vs obs_flips_actual (R186/R197)</span></dd>
+        </div>
+      </div>
+    </div>
+
+    <div class="surface-block" style="margin-top:14px;">
+      <div class="surface-block-title">p_L vs cycles — same patch, same decoder, 15 real rounds</div>
+      <svg viewBox="0 0 672 158" width="100%" height="auto" role="img" aria-label="Logical error curve growing with cycle count, from 0.6% at 1 cycle to 48.9% at 250 cycles, saturating near 0.5">
+        <line x1="36" y1="10" x2="36" y2="140" stroke="var(--rule)" stroke-width="1"/>
+        <line x1="36" y1="140" x2="636" y2="140" stroke="var(--rule)" stroke-width="1"/>
+        <text x="30" y="14" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">0.50</text>
+        <text x="30" y="79" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">0.25</text>
+        <text x="30" y="143" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">0</text>
+        <line x1="36" y1="75" x2="636" y2="75" stroke="var(--rule)" stroke-width="1" stroke-dasharray="2 3"/>
+        <text x="36" y="152" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">r=1</text>
+        <text x="606" y="152" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">r=250</text>
+        <polyline points="36.0,140.0 46.2,131.7 56.3,123.9 66.5,116.6 76.7,109.7 86.8,103.3 97.0,97.3 107.2,91.7 117.4,86.5 127.5,81.6 137.7,77.0 147.9,72.7 158.0,68.7 168.2,64.9 178.4,61.4 188.5,58.1 198.7,55.0 208.9,52.1 219.1,49.4 229.2,46.9 239.4,44.5 249.6,42.3 259.7,40.2 269.9,38.3 280.1,36.5 290.2,34.8 300.4,33.2 310.6,31.7 320.7,30.3 330.9,29.0 341.1,27.8 351.3,26.7 361.4,25.6 371.6,24.6 381.8,23.7 391.9,22.8 402.1,22.0 412.3,21.2 422.4,20.5 432.6,19.8 442.8,19.2 452.9,18.6 463.1,18.0 473.3,17.5 483.5,17.0 493.6,16.6 503.8,16.2 514.0,15.8 524.1,15.4 534.3,15.1 544.5,14.7 554.6,14.4 564.8,14.1 575.0,13.9 585.2,13.6 595.3,13.4 605.5,13.2 615.7,13.0 625.8,12.8 636.0,12.6"
+          fill="none" stroke="var(--stone-300)" stroke-width="1.6" stroke-dasharray="1 3.4" stroke-linecap="round"/>
+        <polyline points="38.4,138.4 60.0,122.0 67.2,115.6 108.0,92.8 156.0,69.9 204.0,55.1 252.0,35.2 300.0,35.0 348.0,27.5 396.0,22.7 444.0,20.1 492.0,16.8 540.0,15.3 588.0,14.4 636.0,12.8"
+          fill="none" stroke="var(--bet)" stroke-width="1.4"/>
+        <circle cx="38.4" cy="138.4" r="2.6" fill="var(--bet)" />
+        <circle cx="60.0" cy="122.0" r="2.6" fill="var(--bet)" />
+        <circle cx="67.2" cy="115.6" r="2.6" fill="var(--bet)" />
+        <circle cx="108.0" cy="92.8" r="2.6" fill="var(--bet)" />
+        <circle cx="156.0" cy="69.9" r="2.6" fill="var(--bet)" />
+        <circle cx="204.0" cy="55.1" r="2.6" fill="var(--bet)" />
+        <circle cx="252.0" cy="35.2" r="2.6" fill="var(--bet)" />
+        <circle cx="300.0" cy="35.0" r="2.6" fill="var(--bet)" />
+        <circle cx="348.0" cy="27.5" r="2.6" fill="var(--bet)" />
+        <circle cx="396.0" cy="22.7" r="2.6" fill="var(--bet)" />
+        <circle cx="444.0" cy="20.1" r="2.6" fill="var(--bet)" />
+        <circle cx="492.0" cy="16.8" r="2.6" fill="var(--bet)" />
+        <circle cx="540.0" cy="15.3" r="2.6" fill="var(--bet)" />
+        <circle cx="588.0" cy="14.4" r="2.6" fill="var(--bet)" />
+        <circle cx="636.0" cy="12.8" r="2.6" fill="var(--bet)" />
+      </svg>
+      <p style="margin:6px 2px 0;font-size:11.5px;color:var(--stone-500);line-height:1.5;">
+        ● points = real p_L by cycle count (same patch <code style="font-family:var(--font-mono)">d3_at_q4_5</code>, fixed decoder).
+        Dashed line = fit 0.5−0.5(1−2ε)ʳ with ε≈0.78%/cycle (mine, not the paper's official Λ — see GAPS).
+      </p>
+    </div>
+
+    <div class="surface-block" style="margin-top:14px;">
+      <div class="surface-block-title">detection_events.b8 split into 5 chunks — original file order, unshuffled</div>
+      <svg viewBox="0 0 672 118" width="100%" height="auto" role="img" aria-label="p_L per chunk of 10,000 consecutive shots from the same .b8 file: 7.14%, 7.27%, 6.69%, 6.99%, 6.62%, all close to the 6.94% ensemble mean">
+        <line x1="40" y1="15" x2="40" y2="95" stroke="var(--rule)" stroke-width="1"/>
+        <line x1="40" y1="95" x2="660" y2="95" stroke="var(--rule)" stroke-width="1"/>
+        <text x="34" y="19" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">8%</text>
+        <text x="34" y="98" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">0%</text>
+        <line x1="40" y1="25.6" x2="660" y2="25.6" stroke="var(--stone-500)" stroke-width="1" stroke-dasharray="2 3"/>
+        <text x="658" y="23.6" text-anchor="end" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">ensemble 6.94%</text>
+        <rect x="71.0" y="23.6" width="62" height="71.4" rx="2" fill="var(--bet)" />
+        <rect x="195.0" y="22.3" width="62" height="72.7" rx="2" fill="var(--bet)" />
+        <rect x="319.0" y="28.1" width="62" height="66.9" rx="2" fill="var(--bet)" />
+        <rect x="443.0" y="25.1" width="62" height="69.9" rx="2" fill="var(--bet)" />
+        <rect x="567.0" y="28.8" width="62" height="66.2" rx="2" fill="var(--bet)" />
+        <text x="102.0" y="18.6" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-950)">7.14%</text>
+        <text x="102.0" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">0–10k</text>
+        <text x="226.0" y="17.3" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-950)">7.27%</text>
+        <text x="226.0" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">10k–20k</text>
+        <text x="350.0" y="23.1" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-950)">6.69%</text>
+        <text x="350.0" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">20k–30k</text>
+        <text x="474.0" y="20.1" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-950)">6.99%</text>
+        <text x="474.0" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">30k–40k</text>
+        <text x="598.0" y="23.8" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-950)">6.62%</text>
+        <text x="598.0" y="108" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--stone-500)">40k–50k</text>
+      </svg>
+      <p style="margin:6px 2px 0;font-size:11.5px;color:var(--stone-500);line-height:1.5;">
+        detection_events.b8 and obs_flips_actual.b8 split into 5 chunks of 10,000 consecutive shots, in the order the
+        file already has them — unshuffled. p_L per chunk: 6.62%–7.27% (range 0.65 pp). Expected per-chunk noise
+        (N=10,000): σ≈0.25 pp ⇒ a ~2.6σ range across 5 chunks is normal sampling, not evidence of drift.
+      </p>
+    </div>
+
+    <div class="surface-block" style="margin-top:14px;">
+      <div class="surface-block-title">§5v integrity · DOI REST — cross-checked against the real APIs</div>
+      <div class="surface-grid">
+        <div class="field full"><dt>DOI_data</dt><dd>10.5281/zenodo.13273331 — DataCite, state=findable, Issued 2024-08-26</dd></div>
+        <div class="field full"><dt>DOI_paper</dt><dd>10.1038/s41586-024-08449-y — Crossref, Nature, Issued 2024-12-09</dd></div>
+        <div class="field full"><dt>DOI_concept_source</dt><dd>10.5281/zenodo.13273330 — groups all versions (not this specific p_L, R151)</dd></div>
+        <div class="field full"><dt>real correction</dt><dd>10.1038/s41586-026-10559-8 — "Author Correction", Crossref update-to→08449-y, Issued 2026-04-28</dd></div>
+        <div class="field"><dt>CROSS paper→zip</dt><dd>OK — real ref. 8449_CR60 of the paper cites 13273331</dd></div>
+        <div class="field"><dt>CROSS zip→paper</dt><dd>NO — 13273331 only cites the 2021/2022 papers (see GAPS)</dd></div>
+        <div class="field full"><dt>§5w counts — three indexes, none is p_L</dt><dd>S2 citationCount 1,364 (live index, checked 2026-09-07 — climbs over time, never frozen) ≠ Crossref is-referenced-by 765 ≠ DataCite citationCount 0 (dataset) — the 0 doesn't contradict CR60, it measures something else (R153/R154)</dd></div>
+        <div class="field"><dt>s2/specter checkbox</dt><dd>N/A — text similarity is not used as a DOI relation (R156/R162)</dd></div>
+        <div class="field full"><dt>§5y overfit_RL — real split 0–40k / 40k–50k, same .b8</dt><dd>si1000: train 7.02% (2809/40000) → test 6.62% (662/10000), Δ=−0.40pp. RL: train 6.43% (2570/40000) → test 6.26% (626/10000), Δ=−0.16pp. Test isn't worse than train for either — no sign of gross overfit to this split. Still a GAP: if Google calibrated the RL prior on (part of) these same 50,000 shots, this split is contaminated and proves no generalization (R192).</dd></div>
+        <div class="field"><dt>NN checkbox</dt><dd>N/A — not loaded in this strip; AlphaQubit is a rival NN decoder cited as reference, not the 6.94% here (R182)</dd></div>
+        <div class="field"><dt>color / H² / RG</dt><dd>N/A — d3_at_q4_5 is a rotated XZZX surface code, not a color code or hyperbolic (R183/R184)</dd></div>
+        <div class="field full"><dt>§5z k=5 real — si1000 headline is the MAXIMUM, not the minimum</dt><dd>correlated+si1000 6.94% (headline) · correlated+RL 6.39% (rival) · harmony+si1000 6.79% · harmony+RL 6.17% · libra+RL 6.11% (real minimum of the k=5, not headlined — R202). si1000 is headlined on purpose — it is not the lowest number available (R191/R196). p_th: not measured. Λ=2.14 is the paper's for d=5→7, not applicable to this d=3 block (R189/R190).</dd></div>
+        <div class="field full"><dt>§5aa fraction · binomial</dt><dd>σ_Bin(N=50,000, p=0.06942)=0.114pp. Range of the 5 sequential chunks (last turn) = 0.65pp, within expected sampling noise. Different: the range across the k=5 DECODERS (6.11%–6.94% = 0.83pp) is NOT noise — it's k=5 correlated estimates on the SAME Y, not 5 independent i.i.d. Binomials (R200).</dd></div>
+        <div class="field full"><dt>§5ab bounds · McDiarmid</dt><dd>Hoeffding and McDiarmid(p̂, c=1/n) at 1σ give bound=1.76 (>1, VACUOUS — no constraint at all). Berry-Esseen (n=50,000) ≤0.0086. Paired McDiarmid for Δ=0.55pp (c=2/n) gives bound=0.94 — also vacuous at this scale (R208). i.i.d. across shots: NOT demonstrated (never will be by this); the DEM's C_ij ≠ correlation between shots (R209).</dd></div>
+        <div class="field full"><dt>MBB checkbox</dt><dd>RUN — real 0/1 vectors for si1000 (.b8 order, unshuffled), ell=200 (1&lt;ell&lt;n), B=2000: se_mbb=0.11pp vs i.i.d. σ_Bin=0.114pp (ratio 0.97). Consistent with i.i.d., NOT a proof of independence (R214).</dd></div>
+        <div class="field"><dt>pulses</dt><dd>NOT IN ZIP — T1/T2/F_CZ/DRAG/calibration aren't in this dataset; not fabricated (R218)</dd></div>
+        <div class="field"><dt>readout</dt><dd>SI1000 LOAD — the 5-parameter model Stim simulates ≠ the real assignment matrix for this run (R219)</dd></div>
+        <div class="field"><dt>OSD / BP-OSD / qLDPC / color</dt><dd>N/A — d3_at_q4_5 uses correlated matching (hypergraph), not OSD/BP-OSD/qLDPC or color/5G polar/SCL (R221/R222/R227-R232)</dd></div>
+        <div class="field"><dt>MWPM</dt><dd>rival not loaded — no folder in this experiment is named MWPM/pymatching; it is not the 3471/50000 (R227)</dd></div>
+        <div class="field full"><dt>§5ac KL · entropy — conditional, not a decoder test</dt><dd>If p_si1000=0.06942 were the reference rate (it isn't, it's this tira's own headline — R226): e^(−nD) for seeing something as far as RL (6.39%) ≈ 4.5×10⁻⁶; as far as libra (6.11%) ≈ 2.6×10⁻¹³. NOT a valid test between paired decoders (same Y — R215). H1(p_L)=0.364 bits — a deterministic function of p_L, not a new physical quantity (R216). BP's λ, N_it: NOT DECLARED by Google.</dd></div>
+      </div>
+    </div>
+
+    <div class="gaps">
+      <div class="section-title">DECLARED GAPS</div>
+      <ul class="gaps-list">
+        <li><b>overfit_RL·</b> of the k=5 real decoders/priors for this experiment, si1000 (6.94%, headline) is the WORST, not the best — the real minimum is libra+RL (6.11%). The split above (0–40k/40k–50k) doesn't show RL worse on test than on train, but that's weak evidence: if Google calibrated the RL prior on these same shots, the split is contaminated and proves nothing beyond this ZIP (R180/R192).</li>
+        <li><b>source gap·</b> the DataCite record for 13273331 (the dataset) does NOT cite back to 08449-y (the paper) — it only cites two 2021/2022 papers. The citation is one-directional: the paper cites the dataset (CR60), the dataset doesn't cite the paper. Verified with two real GET requests (DataCite + Crossref), not assumed from the spec (R146/R148).</li>
+        <li><b>cone·</b> the five decoders/priors in this dataset ran in batch over already-pooled shots, not in real time against the chip (R125). Splitting the .b8 into sequential chunks (above) shows the batch isn't hiding a large drift — but that is NOT the same as decoding online against the chip: it's still the same closed file, split after the fact.</li>
+        <li><b>different ê, same Y·</b> at r=10, k=5 real decoder/prior combinations give different ê on the SAME Y: 6.94% (correlated+si1000, headline) vs 6.39% (correlated+RL) vs 6.79/6.17/6.11% (harmony/libra). This is not "the tape changed" (R127/R129).</li>
+        <li><b>fitted ε, not the official Λ·</b> the ε≈0.78%/cycle in the chart comes from my own fit 0.5−0.5(1−2ε)ʳ to 15 points — it is not the Λ metric the paper reports (which compares across distances, not just cycles). Max fit residual: 2.6 percentage points (R133).</li>
+        <li><b>p_th·</b> a single d isn't enough to know whether this chip is below threshold; d=5 and d=7 are needed too (also in this ZIP, not loaded in this strip).</li>
+        <li><b>physical→logical map·</b> no Lindblad L=√γσ₋ is declared for this chip; the decoders see Pauli syndromes, not physical levels (R124).</li>
+      </ul>
+    </div>
+
+    <div class="formal-footer">
+      <div class="field"><dt>RESIDUE</dt><dd>TRACE n=2: detection_events.b8 (∂e), obs_flips_actual.b8 (logical) · AUXILIARY n=1: decoding_results/correlated_matching_decoder_with_si1000_prior/obs_flips_predicted.b8 (decoder inference, not a physical marker — R143/R163)</dd></div>
+      <div class="field"><dt>UNION</dt><dd>NOT_APPLICABLE — this strip does not combine with χ² PF or SQL mse (R122)</dd></div>
+      <div class="field"><dt>SYMMETRY</dt><dd>none declared</dd></div>
+      <div class="field"><dt>CONE</dt><dd>auditor = T of the published dataset (2024-08-26), not of an ongoing experiment</dd></div>
+    </div>
+
+    <p class="mwi">MWI_NOTE — other branches don't vote; this strip audits a file, it doesn't reconstruct what happened photon by photon.</p>
+  </div>
+
+  <div class="provenance">
+    <span>DOI <a href="https://doi.org/10.5281/zenodo.13273331" target="_blank" rel="noopener">10.5281/zenodo.13273331</a> · Google Quantum AI · CC-BY-4.0</span>
+  </div>
+
+  <div class="integrity">
+    <div class="integrity-title">ZIP integrity — verified before parsing .b8</div>
+    <dl class="integrity-fields">
+      <div class="field"><dt>file</dt><dd>google_105Q_surface_code_d3_d5_d7.zip</dd></div>
+      <div class="field"><dt>bytes</dt><dd>5,716,907,033</dd></div>
+      <div class="field full"><dt>md5 (local, full file)</dt><dd>21fa6ad35b395d838ebcdbc92e364a12</dd></div>
+      <div class="field full"><dt>md5_zenodo (api, files[].checksum)</dt><dd>21fa6ad35b395d838ebcdbc92e364a12</dd></div>
+      <div class="field"><dt>md5_ok</dt><dd class="integrity-ok">yes</dd></div>
+    </dl>
+  </div>
+
+</div>
+</body>
+</html>
