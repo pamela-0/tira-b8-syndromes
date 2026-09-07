@@ -1,6 +1,10 @@
 # Síndromes .b8 / .b8 Syndromes
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22650915.svg)](https://doi.org/10.5281/zenodo.22650915)
+
 Tira pública de auditoría (formato "TIRA" del Protocolo de Agente Finito, v28 · R1–R232) sobre datos reales de corrección de errores cuánticos.
+
+**Citar esta tira:** DOI [10.5281/zenodo.22650915](https://doi.org/10.5281/zenodo.22650915)
 
 - **[Versión en español](index.html)**
 - **[English version](en.html)**
