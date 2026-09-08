@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+type: report
+title: "Síndromes .b8 / .b8 Syndromes"
+authors:
+  - name: "Sovereign Agent Systems"
+version: 1.0.0
+date-released: "2026-09-08"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.22650915"
+license: CC-BY-4.0
+references:
+  - type: dataset
+    doi: "10.5281/zenodo.13273331"
+    title: "Data for \"Quantum error correction below the surface code threshold\""
+  - type: article
+    doi: "10.1038/s41586-024-08449-y"
+    title: "Quantum error correction below the surface code threshold"
