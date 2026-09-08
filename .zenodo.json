@@ -1,0 +1,21 @@
+{
+  "upload_type": "publication",
+  "publication_type": "report",
+  "title": "Síndromes .b8 / .b8 Syndromes",
+  "creators": [
+    { "name": "Sovereign Agent Systems" }
+  ],
+  "license": "CC-BY-4.0",
+  "related_identifiers": [
+    {
+      "relation": "isDerivedFrom",
+      "identifier": "10.5281/zenodo.13273331",
+      "resource_type": "dataset"
+    },
+    {
+      "relation": "cites",
+      "identifier": "10.1038/s41586-024-08449-y",
+      "resource_type": "publication-article"
+    }
+  ]
+}
